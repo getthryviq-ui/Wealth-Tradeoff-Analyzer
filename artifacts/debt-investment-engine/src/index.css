@@ -204,6 +204,145 @@
   }
 }
 
+/* ─── PRINT / PDF STYLES ──────────────────────────────────────────── */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  header,
+  [data-testid="button-toggle-theme"],
+  [data-testid="button-export"],
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11pt;
+  }
+
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .print-page {
+    display: block !important;
+  }
+
+  aside {
+    display: none !important;
+  }
+
+  .lg\:grid-cols-\[320px_1fr\],
+  .lg\:grid-cols-\[360px_1fr\] {
+    display: block !important;
+  }
+
+  /* Remove shadows */
+  * {
+    box-shadow: none !important;
+  }
+
+  /* Ensure cards have borders */
+  .rounded-xl,
+  .rounded-lg {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    break-inside: avoid;
+  }
+
+  /* Force backgrounds to print */
+  .bg-card {
+    background-color: #ffffff !important;
+  }
+
+  .bg-muted\/20,
+  .bg-muted\/40 {
+    background-color: #f8fafc !important;
+  }
+
+  /* Print header */
+  .print-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0 16px 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #0369a1;
+  }
+
+  .print-header h1 {
+    font-size: 18pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .print-header p {
+    font-size: 9pt;
+    color: #64748b;
+    margin: 2px 0 0 0;
+  }
+
+  .print-header .print-date {
+    font-size: 9pt;
+    color: #64748b;
+    text-align: right;
+  }
+
+  h3 {
+    font-size: 11pt;
+    font-weight: 600;
+  }
+
+  /* Table */
+  table {
+    font-size: 9pt;
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  thead th {
+    background-color: #f1f5f9 !important;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  /* Tabs — only show chart tab in print */
+  [role="tablist"],
+  [data-testid="tab-chart"],
+  [data-testid="tab-table"] {
+    display: none !important;
+  }
+
+  [role="tabpanel"] {
+    display: block !important;
+  }
+
+  /* Page breaks */
+  section {
+    break-inside: avoid;
+    margin-bottom: 20px;
+  }
+
+  @page {
+    margin: 18mm 16mm;
+    size: A4;
+  }
+}
+
+/* ─── UTILITIES ──────────────────────────────────────────────────── */
 @layer utilities {
   input[type="search"]::-webkit-search-cancel-button {
     @apply hidden;

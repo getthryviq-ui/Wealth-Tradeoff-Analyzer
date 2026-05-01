@@ -8,6 +8,7 @@ import RecommendationBlock from "@/components/engine/RecommendationBlock";
 import TrajectoryChart from "@/components/engine/TrajectoryChart";
 import ComparisonTable from "@/components/engine/ComparisonTable";
 import MetricCard from "@/components/engine/MetricCard";
+import ExportReport from "@/components/engine/ExportReport";
 import { calculate, formatPercent, formatCurrency, formatMonths } from "@/lib/calculations";
 import type { EngineInputs } from "@/lib/calculations";
 
@@ -53,6 +54,7 @@ export default function Engine({ darkMode, toggleDark }: Props) {
             <span className="hidden sm:inline-block text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-2 py-1 rounded border border-border bg-muted/40">
               Analytical Engine v2
             </span>
+            <ExportReport results={results} inputs={inputs} />
             <Button
               variant="ghost"
               size="icon"
@@ -71,6 +73,20 @@ export default function Engine({ darkMode, toggleDark }: Props) {
       </header>
 
       <main className="max-w-screen-xl mx-auto px-4 sm:px-6 py-6 lg:py-8">
+        {/* Print-only header — hidden on screen */}
+        <div className="print-header hidden" aria-hidden="true">
+          <div>
+            <h1>Debt-to-Investment Tradeoff Analysis</h1>
+            <p>Capital Allocation Decision Framework · Private Client Advisory</p>
+          </div>
+          <div className="print-date">
+            <p>Generated {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
+            <p style={{ marginTop: 4, fontWeight: 600 }}>
+              {inputs.debtInterestRate.toFixed(1)}% APR · {inputs.expectedMarketReturn.toFixed(2)}% Market · {inputs.taxBracket}% Tax
+            </p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[360px_1fr] gap-6 lg:gap-8">
           <aside className="space-y-0">
             <div className="bg-card border border-card-border rounded-xl p-5 sticky top-20">
@@ -79,6 +95,30 @@ export default function Engine({ darkMode, toggleDark }: Props) {
           </aside>
 
           <div className="space-y-6">
+            {/* Print-only parameter summary */}
+            <div className="hidden print:block mb-4">
+              <div className="bg-muted/20 border border-border rounded-lg p-4">
+                <p className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground mb-3">Input Parameters</p>
+                <div className="grid grid-cols-4 gap-3">
+                  {[
+                    { label: "Debt Balance", value: formatCurrency(inputs.debtBalance) },
+                    { label: "Debt APR", value: `${inputs.debtInterestRate.toFixed(1)}%` },
+                    { label: "Market Return", value: `${inputs.expectedMarketReturn.toFixed(2)}%` },
+                    { label: "Tax Bracket", value: `${inputs.taxBracket}%` },
+                    { label: "Monthly Surplus", value: formatCurrency(inputs.monthlySurplus) },
+                    { label: "Time Horizon", value: `${inputs.timeHorizonYears} years` },
+                    { label: "Account Type", value: inputs.investmentType === "tax_advantaged" ? "Tax-Advantaged" : "Taxable" },
+                    { label: "Compounding", value: inputs.debtType === "compound" ? "Compound" : "Simple" },
+                  ].map((p) => (
+                    <div key={p.label}>
+                      <p className="text-[9px] uppercase tracking-wider text-muted-foreground">{p.label}</p>
+                      <p className="text-xs font-mono font-semibold text-foreground">{p.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
