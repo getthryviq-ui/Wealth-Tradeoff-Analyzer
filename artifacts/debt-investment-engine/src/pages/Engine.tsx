@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Moon, Sun, BarChart2 } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InputPanel from "@/components/engine/InputPanel";
@@ -9,8 +9,10 @@ import TrajectoryChart from "@/components/engine/TrajectoryChart";
 import ComparisonTable from "@/components/engine/ComparisonTable";
 import MetricCard from "@/components/engine/MetricCard";
 import ExportReport from "@/components/engine/ExportReport";
+import ScenarioComparison from "@/components/engine/ScenarioComparison";
 import { calculate, formatPercent, formatCurrency, formatMonths } from "@/lib/calculations";
 import type { EngineInputs } from "@/lib/calculations";
+import logoUrl from "/thryviq-logo.png";
 
 const DEFAULT_INPUTS: EngineInputs = {
   debtBalance: 85000,
@@ -35,24 +37,28 @@ export default function Engine({ darkMode, toggleDark }: Props) {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-sm">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/95 backdrop-blur-sm">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
-              <BarChart2 className="w-4 h-4 text-primary-foreground" strokeWidth={1.75} />
-            </div>
-            <div>
-              <h1 className="text-sm font-semibold text-foreground tracking-tight">
+            <img
+              src={logoUrl}
+              alt="ThryvIQ"
+              className="h-7 w-auto"
+              data-testid="img-thryviq-logo"
+            />
+            <div className="hidden sm:block h-5 w-px bg-border" />
+            <div className="hidden sm:block">
+              <p className="text-[11px] font-semibold text-foreground tracking-tight leading-none">
                 Debt-to-Investment Tradeoff Engine
-              </h1>
-              <p className="text-[10px] text-muted-foreground hidden sm:block">
-                Capital Allocation Decision Framework · Private Client Advisory
+              </p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">
+                Capital Allocation Decision Framework
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="hidden sm:inline-block text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-2 py-1 rounded border border-border bg-muted/40">
-              Analytical Engine v2
+            <span className="hidden md:inline-block text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-2 py-1 border border-border bg-muted/40">
+              Private Client Advisory
             </span>
             <ExportReport results={results} inputs={inputs} />
             <Button
@@ -73,23 +79,24 @@ export default function Engine({ darkMode, toggleDark }: Props) {
       </header>
 
       <main className="max-w-screen-xl mx-auto px-4 sm:px-6 py-6 lg:py-8">
-        {/* Print-only header — hidden on screen */}
+        {/* Print-only header */}
         <div className="print-header hidden" aria-hidden="true">
           <div>
+            <img src={logoUrl} alt="ThryvIQ" style={{ height: 32, marginBottom: 8 }} />
             <h1>Debt-to-Investment Tradeoff Analysis</h1>
-            <p>Capital Allocation Decision Framework · Private Client Advisory</p>
+            <p>Capital Allocation Decision Framework · Private Client Advisory · GetThryvIQ.com</p>
           </div>
           <div className="print-date">
             <p>Generated {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
             <p style={{ marginTop: 4, fontWeight: 600 }}>
-              {inputs.debtInterestRate.toFixed(1)}% APR · {inputs.expectedMarketReturn.toFixed(2)}% Market · {inputs.taxBracket}% Tax
+              {inputs.debtInterestRate.toFixed(1)}% APR · {inputs.expectedMarketReturn.toFixed(2)}% Market · {inputs.taxBracket}% Tax Bracket
             </p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] xl:grid-cols-[360px_1fr] gap-6 lg:gap-8">
           <aside className="space-y-0">
-            <div className="bg-card border border-card-border rounded-xl p-5 sticky top-20">
+            <div className="bg-card border border-card-border p-5 sticky top-20">
               <InputPanel inputs={inputs} onChange={setInputs} />
             </div>
           </aside>
@@ -97,7 +104,7 @@ export default function Engine({ darkMode, toggleDark }: Props) {
           <div className="space-y-6">
             {/* Print-only parameter summary */}
             <div className="hidden print:block mb-4">
-              <div className="bg-muted/20 border border-border rounded-lg p-4">
+              <div className="bg-muted/20 border border-border p-4">
                 <p className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground mb-3">Input Parameters</p>
                 <div className="grid grid-cols-4 gap-3">
                   {[
@@ -184,16 +191,19 @@ export default function Engine({ darkMode, toggleDark }: Props) {
                   </p>
                   <TabsList className="h-8">
                     <TabsTrigger value="chart" className="text-xs h-7 px-3" data-testid="tab-chart">
-                      Trajectory Chart
+                      Chart
                     </TabsTrigger>
                     <TabsTrigger value="table" className="text-xs h-7 px-3" data-testid="tab-table">
-                      Comparison Table
+                      Table
+                    </TabsTrigger>
+                    <TabsTrigger value="scenarios" className="text-xs h-7 px-3" data-testid="tab-scenarios">
+                      Scenarios
                     </TabsTrigger>
                   </TabsList>
                 </div>
 
                 <TabsContent value="chart">
-                  <div className="bg-card border border-card-border rounded-xl p-5">
+                  <div className="bg-card border border-card-border p-5">
                     <div className="flex items-start justify-between mb-5">
                       <div>
                         <h3 className="text-sm font-semibold text-foreground">
@@ -203,7 +213,7 @@ export default function Engine({ darkMode, toggleDark }: Props) {
                           Investment accumulation vs. debt reduction over {inputs.timeHorizonYears}-year horizon
                         </p>
                       </div>
-                      <span className="text-[10px] text-muted-foreground bg-muted/60 px-2 py-1 rounded border border-border font-mono">
+                      <span className="text-[10px] text-muted-foreground bg-muted/60 px-2 py-1 border border-border font-mono">
                         {inputs.timeHorizonYears}yr
                       </span>
                     </div>
@@ -217,7 +227,7 @@ export default function Engine({ darkMode, toggleDark }: Props) {
                 </TabsContent>
 
                 <TabsContent value="table">
-                  <div className="bg-card border border-card-border rounded-xl overflow-hidden">
+                  <div className="bg-card border border-card-border overflow-hidden">
                     <div className="px-5 py-4 border-b border-card-border">
                       <h3 className="text-sm font-semibold text-foreground">
                         Interest Cost vs. Projected Growth
@@ -233,10 +243,16 @@ export default function Engine({ darkMode, toggleDark }: Props) {
                     />
                   </div>
                 </TabsContent>
+
+                <TabsContent value="scenarios">
+                  <div className="bg-card border border-card-border p-5">
+                    <ScenarioComparison currentInputs={inputs} />
+                  </div>
+                </TabsContent>
               </Tabs>
             </section>
 
-            <section className="bg-card border border-card-border rounded-xl p-5">
+            <section className="bg-card border border-card-border p-5">
               <p className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground mb-4">
                 Formula Reference
               </p>
@@ -263,12 +279,32 @@ export default function Engine({ darkMode, toggleDark }: Props) {
                 />
               </div>
               <p className="text-[10px] text-muted-foreground mt-4 leading-relaxed">
-                <span className="font-semibold">Disclaimer:</span> This engine is an analytical decision-support tool. Projections are based on static assumptions and do not account for market volatility, tax law changes, debt refinancing, or behavioral factors. All outputs should be reviewed alongside a qualified financial advisor before acting on recommendations.
+                <span className="font-semibold">Disclaimer:</span> This engine is an analytical decision-support tool provided by ThryvIQ (GetThryvIQ.com). Projections are based on static assumptions and do not account for market volatility, tax law changes, debt refinancing, or behavioral factors. All outputs should be reviewed alongside a qualified financial advisor before acting on recommendations.
               </p>
             </section>
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border mt-8">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src={logoUrl} alt="ThryvIQ" className="h-5 w-auto opacity-70" />
+            <span className="text-[10px] text-muted-foreground">
+              From financial stress to clarity.
+            </span>
+          </div>
+          <a
+            href="https://GetThryvIQ.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[10px] text-primary hover:underline font-medium"
+          >
+            GetThryvIQ.com
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -315,11 +351,11 @@ function FormulaCard({
   description: string;
 }) {
   return (
-    <div className="rounded-lg border border-border p-4 bg-muted/20">
+    <div className="border border-border p-4 bg-muted/20">
       <p className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground mb-2">
         {title}
       </p>
-      <code className="block text-xs font-mono text-primary bg-primary/8 px-3 py-2 rounded-md mb-2 font-medium">
+      <code className="block text-xs font-mono text-primary bg-primary/8 px-3 py-2 mb-2 font-medium">
         {formula}
       </code>
       <p className="text-[11px] text-muted-foreground leading-relaxed">{description}</p>

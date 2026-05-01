@@ -47,8 +47,8 @@ function buildNotionText(results: EngineResults, inputs: EngineInputs): string {
     .join("\n");
 
   return `# Debt-to-Investment Tradeoff Analysis
-*Capital Allocation Decision Framework · Private Client Advisory*
-*Generated: ${today}*
+*ThryvIQ — Capital Allocation Decision Framework · Private Client Advisory*
+*GetThryvIQ.com · Generated: ${today}*
 
 ---
 
@@ -112,7 +112,7 @@ ${rows}
 
 ---
 
-*This analysis is provided for informational purposes only and does not constitute financial advice. All projections are based on static assumptions. Consult a qualified financial advisor before making capital allocation decisions.*`;
+*This analysis is provided by ThryvIQ (GetThryvIQ.com) for informational purposes only and does not constitute financial advice. All projections are based on static assumptions. Consult a qualified financial advisor before making capital allocation decisions.*`;
 }
 
 export default function ExportReport({ results, inputs }: Props) {
