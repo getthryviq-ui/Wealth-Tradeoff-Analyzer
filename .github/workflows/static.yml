@@ -36,18 +36,21 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build:gh
+        working-directory: artifacts/debt-investment-engine
+        env:
+          GITHUB_PAGES: "true"
+        run: pnpm run build
 
       - name: Add .nojekyll
-        run: touch dist/.nojekyll
+        run: touch artifacts/debt-investment-engine/dist/public/.nojekyll
 
       - name: Add 404.html
-        run: cp dist/index.html dist/404.html
+        run: cp artifacts/debt-investment-engine/dist/public/index.html artifacts/debt-investment-engine/dist/public/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: artifacts/debt-investment-engine/dist/public
 
   deploy:
     needs: build
