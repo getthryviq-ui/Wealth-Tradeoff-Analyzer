@@ -37,8 +37,6 @@ jobs:
 
       - name: Build
         working-directory: artifacts/debt-investment-engine
-        env:
-          GITHUB_PAGES: "true"
         run: pnpm run build
 
       - name: Add .nojekyll
